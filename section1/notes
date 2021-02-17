@@ -1,0 +1,135 @@
+# check versions of out docker cli and engine
+# create a Nginx (web server) container
+# learn a common container managemnt commands
+# learn docker networking basics
+
+commands
+
+docker version - make sure client and engine are ok
+docker info - most config values of engine
+docker - avaiable commands
+
+CLI STRUCTURE
+
+- old (still works): docler <command> (options)
+
+- new docker <command> <sub-command> (options) # use this
+
+
+docker management command AND subcommand
+docker container run
+
+#1 image vs. container
+#2 run/stop/remove containers
+#3 check container logs and processes
+
+#1 
+image is the applocation we want to run
+container is a instance of that image running as a process
+
+you can have many containers running off the same image
+
+get images from "registry's" the oficial is dockerhub.
+
+
+>> docker container run --publish 80:80 nginx 
+
+- what it does?
+1. Download image 'nginx' from docker hub
+2. start a nw container from that image
+3. Opened port 80 on the host IP
+4. Routes that traffic to the container IP, port 80
+
+
+>> docker container run --publish 80:80 --detach nginx 
+
+--detach (option): runs container in the background.
+
+
+>> docker container ls (new way)
+>> docker ps           (old way)
+
+list all running containers
+
+-a (option) show all
+
+for each run command, one docker is created.
+
+if you wanto to give a name and not a generic docker name:
+
+>> docker container run --publish 8000:80 --detach --name webhost nginx
+
+get logs:
+supose a container with name: webhost
+
+>> docker container logs webhost (new)
+>> docker logs 			 (old)
+
+list running processes in specific container
+>> docker container top webhost
+
+you can't remove a running container
+
+to rm a container that is running, you can stop running containers
+or use option -f to force.
+
+>> docker container rm -f <container-id>
+
+>> docker container stop
+
+
+#4 What happens in 'docker container run' ?
+
+1. looks for that image locally in image cache, if dosent find ->2
+2. Looks in remote image repository (default to docker hub)
+3. Downloads the latest version (if default)
+4. creates new container based on that image and prepares to start
+5. gives it a virtual IP on a private network inside docker engine
+6. opens up port 80 on host and forwards to port 80 in container (if default)
+7. starts container by using the CMD in the image Dockerfile
+
+ex:
+
+docker container run --publish 8000:80 --name webhost -d nginx:1.1 nginx -T
+
+#5 Containers vs VM
+
+containers:
+
+-They are just processes
+-limited to what resources they can acess
+-Exit when process stops
+
+ex
+
+docker run --name mongo -d mongo
+
+docker top mongo
+
+* in this example, only one process running
+
+ps aux <linux command, shows all processes running>
+
+doc.docker.com and --help
+
+assignment
+
+run all of them:
+
+- nginx, mysql and httpd server
+- run all of them --detach (or -d) name them with name
+- nginx should liste on 80:80
+- httpd on 8080:80
+- mysql on 3006:3306
+- when running  mysql, use the --env option (or -e) to pass in
+MYSQL_RANDOM_ROOT_PASSWORD=yes
+- use docker containers logs on mysql to find the random
+password it created on startup.
+- clean it all up with docker container stop and docker
+container rm (both can accept multiple names or ID's)
+
+
+>> docker container run --publish 8000:80 --detach --name webhost nginx
+
+
+
