@@ -29,3 +29,5 @@ docker container rm -f <ids>   (wih containers running)
 5.
 docker container ls
 docker container ls -a
+
+

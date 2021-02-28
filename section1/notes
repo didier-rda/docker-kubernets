@@ -145,4 +145,217 @@ on the same published port on the same host, not in multiple
 containers. Each container gets its own internal IP behind NAT, 
 so the ports won't conflict across two container network interfaces.
 
+- What is going on in containers?
+
+docker container top - process list in one container
+docker container inspect - details of one container config
+docker container stats - performance stats for all containers
+
+getting a shell inside containers: No need for ssh
+
+
+Getting a shell inside containers
+
+docker container run -it  -start new container interactively
+docker container exec -it -run additional command in existing
+
+diffs linux distros in containers
+
+-t : pseudo-tty
+
+simulates a real terminal, like what SSH does
+
+-i : interactive
+
+Keep session open to receive terminal input
+
+docker container rin [OPTIONS] IMAGE [COMMAND] [ARGS...]
+
+so, inside docker you can use for example
+
+docker container run -it --name webhost nginx bash
+
+containers only run as long as the command that it
+ran on startup runs.
+
+since we changed it to bash, simply exiting bash quit it.
+
+lets test in ubun
+
+docker container run -it --name img-ubuntu ubuntu
+
+inside ubuntu we can run:
+
+apt-get update
+apt-get install curl , for example
+
+but, when you exit the container, wyith you try
+to run a ubuntu img again with 'docker container run'
+you gonna create a new container.
+
+to use this container with curl you should use
+
+docker container start -ai
+
+-a : attach 
+-i : interative
+
+with docker container start --help
+
+we have that:
+
+docker container start [OPTIONS] CONTAINER [CONTAINER...]
+
+you can use forexample:
+
+docker container start -ai <IMG NAME>
+docker container start -ai <CONTAINER ID>
+
+
+what if I want to actually see the shell inside
+a running container that's already running something like mysql
+
+docker container exec 
+
+Run additional process in running container
+
+doc:
+
+docker container exec [OPTIONS] CONTAINER COMMAND [ARG...]
+
+lets test in a contaniner running a mysql
+
+
+first lets create the mysql container:
+option 1: docker container run --detach --name database --env MYSQL_RANDOM_ROOT_PASSWOED=yes mysql
+
+option 2: docker container run --publish 3006:3306 --detach --name database --env MYSQL_RANDOM_ROOT_PASSWORD=yes mysql
+
+if op2:
+
+docker container exec -it database bash
+
+
+of toppic
+apt-get update && apt-get install -y procps
+
+docker pull alpine
+
+docker container run -it alpine sh
+app manager in alpine is:
+apk, you can install bash if you need it
+
+review:
+
+docker container run -it - start new container interactively
+docker container exec -it -run a additional command in existing container
+
+-Docker Networks: Concepts for private and public Comms in containers
+- comunicação em containers*
+
+
+docker container run -p
+for local dev/testong, networks usually 'just work'
+
+quick port check with docker container port
+learn concepts of docker networking
+understando how network packets move around docker
+
+
+look at 
+remember:
+-p : publish
+and is always in the format: HOST:CONTAINER
+
+docker container run -p 80:80 --name webhost -d nginx
+
+docker container port webhost
+
+kill all containers 
+docker container rm -fv $(docker ps -aq)
+
+docker container inspect --format
+
+
+docker container run -d -n database -e MYSQL_RANDOM_ROOT_PASSWORD=yes mysql
+
+get container IP
+docker container inspect --fromat '{{ .NetworkSettings.IPAddress  }}' webhost
+
+dddd
+
+obs: docker container run <stuff> nginx
+
+use: docker container run <stuff> nginx:alpine
+
+
+docker network ls
+
+docker network inspect
+
+docker network create --driver
+docker network connect
+docker network disconnect
+
+
+spwawns a new virtual network for you to
+attach containers to
+
+
+docker Networks: DNS
+
+- understand how DNS is the key to easy inter-container comms
+- see how it works by default with custom networks
+- learn how to use --link to enable DNS on default bridge network
+
+talk with other
+
+static IP's and using IP's fot talking to containers
+is an anti-pattern. Do your best to avoid it.
+
+container migh go away/ migth fail
+
+docker daemon has a built-in DNS server
+that cotaniers use by default
+
+create a new network
+docker network create my_app_net
+
+docker container run -d --name webhost1 --network my_app_net nginx:alpine
+
+(you can see: docker network inspect <container id>)
+if there is a running container, you can connect it to your app net with:
+docker network connect 
+
+DNS connection
+docker container exec -it webhost1 ping webhost2
+
+
+the bridge network (default) doeent permit that.
+you have to use --link
+
+
+so is a good pratice to using custom networks.
+
+containers shouldn't rely on IP's for inter-comm
+
+DNS for friendly names is builçt-in if you use cuustom nets
+this get way easier with docker compose in future section;
+
+
+recap:
+
+docker container top -  top is used for looking at running processes *inside* a container.
+docker container stats - used to show performance statistics of all containers.
+docker container inspect - show the output of the processes happening live in a container.
+docker container logs - shows you the container configuration. It can also be modified to only return a specific piece of data using the —format flag.
+
+By using the 'docker exec -it <container> sh' (or bash) command on a container, we can connect to a shell from inside it.
+
+multiple containers to be able to communicate with each other on the same docker host you should use
+the default bridge network driver allow containers to communicate with each other when running on the same docker host.
+
+The --rm causes Docker to automatically remove the container when it exits.
+
+
 

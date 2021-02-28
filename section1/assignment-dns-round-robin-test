@@ -1,0 +1,12 @@
+docker create my_app_net
+
+docker container run -d --net my_app_net --net-alias serach. elasticsearch:2
+docker container run -d --net my_app_net --net-alias serach. elasticsearch:2
+
+docker container ls
+
+docker container run --rm --net my_app_net alpine nslook search.
+
+docker container run --rm --net my_app_net centos curl -s search:9200
+
+if run again and agian, name is randon.
