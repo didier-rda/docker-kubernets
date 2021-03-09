@@ -358,4 +358,66 @@ the default bridge network driver allow containers to communicate with each othe
 The --rm causes Docker to automatically remove the container when it exits.
 
 
+# IMAGES
 
+what is?
+-app binaries and dependecies
+-Metadata about the image data and how to rub the image
+
+Oficial definition
+- An image is an ordered colletion of root filesystem changes and the corresponding execution parameters for
+use withn a container runtime.
+
+THE HOST PROVIDES THE KERNEL
+
+- docker hub
+- diference between oficial and públic
+download images and  basics of image tags
+
+-image layers
+- union file system
+- history and inspect commands
+- copy on write
+
+docker image history
+
+show layers of changes made in image
+
+every change is a new layer
+
+layesrs
+works as a stackf of commands
+
+ex:
+
+ENV
+___
+APT
+_____
+ubuntu
+
+
+custom:
+
+2 images but entire stack common is saved.
+
+COPY/COPYB
+_____
+PORT
+___
+APACHE
+____
+custom
+
+docker image inspect
+
+all the details of image in json format.
+
+images are made up of file system changes and metadata
+each layer is uniquely identified and only stored once on a host
+this save storage space on host and transfer time on push/pull
+
+a container is just a single read/write layer ib top of image.
+
+docker image history
+docker  image inspect commands can teach us.
